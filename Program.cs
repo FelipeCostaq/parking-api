@@ -1,4 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using MinimalApi.Infrastructure.DB;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<VehiclesContext>(options =>
+{
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("mysql"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mysql"))
+    );
+});
 
 var app = builder.Build();
 
