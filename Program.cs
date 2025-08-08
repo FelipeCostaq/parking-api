@@ -4,7 +4,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Hello, World!");
 
-app.MapPost("/login", (LoginDTO loginDto) =>
+app.MapPost("/login", (MinimalApi.Domain.DTO.LoginDTO loginDto) =>
 {
     if (loginDto.Email == "administrador@admin.com" && loginDto.Password == "admin123")
         return Results.Ok("Login com Sucesso");
@@ -14,9 +14,3 @@ app.MapPost("/login", (LoginDTO loginDto) =>
 });
 
 app.Run();
-
-public class LoginDTO
-{
-    public string Email { get; set; } = default!;
-    public string Password { get; set; } = default!;
-}
