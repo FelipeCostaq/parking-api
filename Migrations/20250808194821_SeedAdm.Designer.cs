@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MinimalApi.Infrastructure.DB;
 
@@ -10,9 +11,11 @@ using MinimalApi.Infrastructure.DB;
 namespace MinimalApi.Migrations
 {
     [DbContext(typeof(VehiclesContext))]
-    partial class VehiclesContextModelSnapshot : ModelSnapshot
+    [Migration("20250808194821_SeedAdm")]
+    partial class SeedAdm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,32 +59,6 @@ namespace MinimalApi.Migrations
                             Password = "admin123",
                             Profile = "Adm"
                         });
-                });
-
-            modelBuilder.Entity("MinimalApi.Domain.Entity.Vehicle", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Brand")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Vehicles");
                 });
 #pragma warning restore 612, 618
         }
