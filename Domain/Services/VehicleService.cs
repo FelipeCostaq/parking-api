@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MinimalApi.Domain.Entity;
 using MinimalApi.Domain.Interfaces;
 using MinimalApi.Infrastructure.DB;
 
 namespace MinimalApi.Domain.Services
 {
-    public class VehicleService : IVehicleInterface
+    public class VehicleService : IVehicleService
     {
         private readonly VehiclesContext _context;
 
@@ -32,7 +33,7 @@ namespace MinimalApi.Domain.Services
             _context.SaveChanges();
         }
 
-        public List<Vehicle> GetAllVehicles(int page = 1, string? name = null, string? brand = null)
+        public List<Vehicle> GetAllVehicles(int? page = 1, string? name = null, string? brand = null)
         {
             var query = _context.Vehicles.AsQueryable();
 
@@ -43,7 +44,10 @@ namespace MinimalApi.Domain.Services
 
             int itemsPerPage = 10;
 
-            query = query.Skip((page - 1) * itemsPerPage).Take(itemsPerPage);
+            if (page != null)
+            {
+                query = query.Skip(((int)page - 1) * itemsPerPage).Take(itemsPerPage);
+            }
 
             return query.ToList();
         }
