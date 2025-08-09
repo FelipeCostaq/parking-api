@@ -47,7 +47,7 @@ app.MapPost("/admin/login", ([FromBody] LoginDTO loginDto, IAdminService adminSe
     else
         return Results.Unauthorized();
     
-});
+}).WithTags("Login");
 
 #endregion
 
@@ -65,7 +65,7 @@ app.MapPost("/vehicles", ([FromBody] VehicleDTO vehiclesDTO, IVehicleService veh
     vehicleService.AddVehicle(vehicle);
 
     return Results.Created($"/vehicle/{vehicle.Id}", vehicle);
-});
+}).WithTags("Veículo");
 
 #endregion
 
@@ -76,18 +76,57 @@ app.MapGet("/vehicles", ([FromQuery] int? page, IVehicleService vehicleService) 
     var vehicles = vehicleService.GetAllVehicles(page);
 
     return Results.Ok(vehicles);
-});
+}).WithTags("Veículo");
 
 #endregion
 
 #region Get Vehicle By Id
 
-app.MapGet("/vehicles/{id}", ([FromQuery] int id, IVehicleService vehicleService) =>
+app.MapGet("/vehicles/{id}", ([FromRoute] int id, IVehicleService vehicleService) =>
 {
-    var vehicles = vehicleService.GetVehicleById(id);
+    var vehicle = vehicleService.GetVehicleById(id);
 
-    return Results.Ok(vehicles);
-});
+    if (vehicle == null)
+        return Results.NotFound();
+
+    return Results.Ok(vehicle);
+}).WithTags("Veículo");
+
+#endregion
+
+#region Put Edit Vehicle
+
+app.MapPut("/vehicles/{id}", ([FromRoute] int id, VehicleDTO vehicleDTO, IVehicleService vehicleService) =>
+{
+    var vehicle = vehicleService.GetVehicleById(id);
+
+    if (vehicle == null)
+        return Results.NotFound();
+
+    vehicle.Name = vehicleDTO.Name;
+    vehicle.Brand = vehicleDTO.Brand;
+    vehicle.Year = vehicleDTO.Year;
+
+    vehicleService.EditVehicle(vehicle);
+
+    return Results.Ok(vehicle);
+}).WithTags("Veículo");
+
+#endregion
+
+#region Delete Vehicle
+
+app.MapDelete("/vehicles/{id}", ([FromRoute] int id, IVehicleService vehicleService) =>
+{
+    var vehicle = vehicleService.GetVehicleById(id);
+
+    if (vehicle == null)
+        return Results.NotFound();
+
+    vehicleService.DeleteVehicle(vehicle);
+
+    return Results.NoContent();
+}).WithTags("Veículo");
 
 #endregion
 
