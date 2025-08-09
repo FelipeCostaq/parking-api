@@ -80,4 +80,16 @@ app.MapGet("/vehicles", ([FromQuery] int? page, IVehicleService vehicleService) 
 
 #endregion
 
+#region Get Vehicle By Id
+
+app.MapGet("/vehicles/{id}", ([FromQuery] int id, IVehicleService vehicleService) =>
+{
+    var vehicles = vehicleService.GetVehicleById(id);
+
+    return Results.Ok(vehicles);
+});
+
+#endregion
+
+
 app.Run();
