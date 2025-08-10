@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MinimalApi.Domain.Entity;
 using MinimalApi.Domain.Interfaces;
 using MinimalApi.Infrastructure.DB;
