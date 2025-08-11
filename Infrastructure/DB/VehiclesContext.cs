@@ -32,7 +32,7 @@ namespace MinimalApi.Infrastructure.DB
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connectionString = _contextAppSetting.GetConnectionString("mysql")?.ToString();
+                var connectionString = _contextAppSetting.GetConnectionString("MySql")?.ToString();
 
                 if (!string.IsNullOrEmpty(connectionString))
                 {
