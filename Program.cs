@@ -6,6 +6,7 @@ using MinimalApi.Domain.DTO;
 using Microsoft.AspNetCore.Mvc;
 using MinimalApi.Domain.Entity;
 using MinimalApi.Domain.ModelViews;
+using MinimalApi.Domain.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,87 @@ app.MapPost("/admin/login", ([FromBody] LoginDTO loginDto, IAdminService adminSe
 }).WithTags("Login");
 
 #endregion
+
+#region Post Create Account
+
+app.MapPost("/admin", ([FromBody] AdminDTO adminDTO, IAdminService adminService) =>
+{
+    var validation = new ValidationError
+    {
+        Messages = new List<string>()
+    };
+
+    if (string.IsNullOrEmpty(adminDTO.Email))
+        validation.Messages.Add("Email não pode ser vazio");
+
+    if (string.IsNullOrEmpty(adminDTO.Password))
+        validation.Messages.Add("A senha não pode ser vazia");
+
+    if (adminDTO.Profile == null)
+        validation.Messages.Add("O perfil não pode ser vazio");
+
+    if (validation.Messages.Count > 0)
+        return Results.BadRequest(validation);
+
+    var admin = new Admin
+    {
+        Email = adminDTO.Email,
+        Password = adminDTO.Password,
+        Profile = adminDTO.Profile.ToString() ?? Profile.Editor.ToString()
+    };
+
+    adminService.AddAdmin(admin);
+
+    return Results.Created($"/admin/{admin.Id}", new AdminModelView
+    {
+        Id = admin.Id,
+        Email = admin.Email,
+        Profile = admin.Profile
+    });
+}).WithTags("Login");
+
+#endregion
+
+#region Get All Admins
+
+app.MapGet("/admin/login", ([FromQuery] int? page, IAdminService adminService) =>
+{
+    var admins = new List<AdminModelView>();
+    var admin = adminService.GetAllAdmins(page);
+    foreach (var adm in admin)
+    {
+        admins.Add(new AdminModelView
+        {
+            Id = adm.Id,
+            Email = adm.Email,
+            Profile = adm.Profile
+        });
+    }
+
+    return Results.Ok(admins);
+}).WithTags("Login");
+
+#endregion
+
+#region Get Admin By Id
+
+app.MapGet("/admin/{id}", ([FromRoute] int id, IAdminService adminService) =>
+{
+    var admin = adminService.GetAdminById(id);
+
+    if (admin == null)
+        return Results.NotFound();
+
+    return Results.Ok(new AdminModelView
+    {
+        Id = admin.Id,
+        Email = admin.Email,
+        Profile = admin.Profile
+    });
+}).WithTags("Login");
+
+#endregion
+
 
 ValidationError ValidationDTO(VehicleDTO vehicleDTO)
 {

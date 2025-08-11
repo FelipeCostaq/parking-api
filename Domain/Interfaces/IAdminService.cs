@@ -6,5 +6,9 @@ namespace MinimalApi.Domain.Interfaces
     public interface IAdminService
     {
         Admin? Login(LoginDTO loginDTO);
+
+        Admin? AddAdmin(Admin admin);
+        List<Admin> GetAllAdmins(int? page);
+        Admin? GetAdminById(int id);
     }
 }
